@@ -1,39 +1,34 @@
 package player;
 
 import player.music.Playlist;
-
 import java.util.LinkedList;
 import java.util.List;
 
 public class Player {
 
-
-    public class Person {
-        public final String name = "hello";
-
-        public String getName() {
-            return name;
-        }
-    }
     private final List<Playlist> list;
 
-
+    /**
+     * constructor for player
+     */
     public Player() {
         list = new LinkedList<>();
-
-        list.add(new Playlist());
-
-
     }
 
+    /**
+     * getter
+     * @return list     list of playlists
+     */
     public List<Playlist> getList() {
-        return list.subList(0, list.size());
+        return list;
     }
 
-    public void newPlaylist(String s) {
-        final Playlist playlist = new Playlist();
-
+    /**
+     *  returns the playlist that is currently
+     *  being played in the player.
+     */
+    public Playlist getCurrentPlaylist() {
+        //edit this method
+        return new Playlist("s");
     }
-
-
 }
