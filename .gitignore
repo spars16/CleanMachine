@@ -2,6 +2,11 @@
 
 .idea/
 
+#idea files
+
+out/
+
+
 #class files
 
 *.class
