@@ -8,6 +8,7 @@ import player.music.Playlist;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
 
 public class SelectionPanel extends SubPanel {
@@ -34,9 +35,8 @@ public class SelectionPanel extends SubPanel {
         JList<String> playlistList = new JList();
         final java.util.List<player.music.Playlist> tempList = player.getPlaylists();
         String playlistArray[] = new String[tempList.size()];
-        for(int i=0;i < tempList.size();i++)
-        {
-           // playlistList.addElement((tempList.get(i)).getName());
+        for (int i = 0; i < tempList.size(); i++) {
+            // playlistList.addElement((tempList.get(i)).getName());
             playlistArray[i] = tempList.get(i).getName();
         }
         playlistList.setListData(playlistArray);
@@ -51,14 +51,31 @@ public class SelectionPanel extends SubPanel {
         selectPanel.add(artists);
         selectPanel.add(albums);
         selectPanel.add(playlists);
+        selectPanel.add(addPlaylist);
         selectPanel.add(playlistList);
 
         add(selectPanel, BorderLayout.WEST);
         add(new CenterPanel(listener, player, player.getCurrentPlayerlist()), BorderLayout.CENTER);
 
         add.addActionListener((e) -> player.addNewSong(choose()));
-    }
 
+        addPlaylist.addActionListener((ActionEvent e) ->
+        {
+            player.addNewPlaylist(JOptionPane.showInputDialog("Please Input PlaylistName"));
+            final java.util.List<player.music.Playlist> otherList = player.getPlaylists();
+            String dankArray[] = new String[otherList.size()];
+            for (int i = 0; i < otherList.size(); i++) {
+                dankArray[i] = otherList.get(i).getName();
+            }
+            playlistList.setListData(dankArray);
+            playlistList.updateUI();
+
+        });
+
+
+
+
+    }
 
     public File[] choose() {
         JFileChooser chooser = new JFileChooser();
@@ -66,7 +83,9 @@ public class SelectionPanel extends SubPanel {
                 "MP3 & MP4 Audio", "mp3", "mp4");
         chooser.setFileFilter(filter);
         chooser.setMultiSelectionEnabled(true);
-        chooser.setCurrentDirectory(new File(player.getDefaultDirectory()));
+        if(player.getDefaultDirectory() != null)
+            chooser.setCurrentDirectory(
+                new File(player.getDefaultDirectory()));
         int returnVal = chooser.showOpenDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             player.setDefaultDirectory(chooser.getCurrentDirectory().getAbsolutePath());
@@ -75,5 +94,13 @@ public class SelectionPanel extends SubPanel {
 
         return new File[0];
     }
+/*
+    public boolean addPlaylistGui()
+    {
+        String newName = JOptionPane.showInputDialog("Please Input Playlist Name");
+        //player.addNewPlayList(newName);
+        return true;
+    }
+*/
 
 }
