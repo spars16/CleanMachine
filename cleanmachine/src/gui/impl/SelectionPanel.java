@@ -3,6 +3,7 @@ package gui.impl;
 import gui.MainPanel;
 import gui.SubPanel;
 import player.Player;
+import player.music.Playlist;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -26,10 +27,22 @@ public class SelectionPanel extends SubPanel {
         final JLabel songs = new JLabel("Songs");
         final JLabel artists = new JLabel("Artists");
         final JLabel albums = new JLabel("Albums");
+        final JLabel playlists = new JLabel("PlayLists");
         final JButton add = new JButton("+");
-        //NOTE: need to add mouselisteners to these in order to access their lists
+        final JButton addPlaylist = new JButton("add playlist");
+
+        JList<String> playlistList = new JList();
+        final java.util.List<player.music.Playlist> tempList = player.getPlaylists();
+        String playlistArray[] = new String[tempList.size()];
+        for(int i=0;i < tempList.size();i++)
+        {
+           // playlistList.addElement((tempList.get(i)).getName());
+            playlistArray[i] = tempList.get(i).getName();
+        }
+        playlistList.setListData(playlistArray);
 
         final JPanel selectPanel = new JPanel();
+        JScrollPane scrollSelect = new JScrollPane(selectPanel);
 
         selectPanel.setLayout(new BoxLayout(selectPanel, BoxLayout.Y_AXIS));
 
@@ -37,6 +50,8 @@ public class SelectionPanel extends SubPanel {
         selectPanel.add(songs);
         selectPanel.add(artists);
         selectPanel.add(albums);
+        selectPanel.add(playlists);
+        selectPanel.add(playlistList);
 
         add(selectPanel, BorderLayout.WEST);
         add(new CenterPanel(listener, player, player.getCurrentPlayerlist()), BorderLayout.CENTER);
