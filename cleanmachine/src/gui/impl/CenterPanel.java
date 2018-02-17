@@ -1,19 +1,23 @@
-package gui;
+package gui.impl;
 
+import gui.MainPanel;
+import gui.SubPanel;
 import player.Player;
 import player.music.Playlist;
 import player.music.SongDefinition;
+import sun.applet.Main;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class CenterPanel extends JPanel {
-    private final Player player;
+public class CenterPanel extends SubPanel {
     private final Playlist playlist;
 
-    public CenterPanel(Player player, Playlist clickedPlaylist) {
-        this.player = player;
+    public CenterPanel(MainPanel listener, Player player, Playlist clickedPlaylist) {
+        super(listener, player);
+        setLayout(new BorderLayout());
         this.playlist = clickedPlaylist;
+        add(new JLabel());
     }
 
     public JPanel songInfo(SongDefinition definition) {

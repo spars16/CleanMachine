@@ -1,5 +1,5 @@
+import com.sun.javafx.application.PlatformImpl;
 import gui.MainPanel;
-import gui.PlayerPanel;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.skin.*;
 import player.Constants;
@@ -8,14 +8,16 @@ import player.Resource;
 import player.music.io.PlaylistLoader;
 
 import javax.swing.*;
-import java.io.File;
+import java.awt.*;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Optional;
 
 public class Main {
 
     public static void main(String[] args) {
+
+        Toolkit.getDefaultToolkit();
+        PlatformImpl.startup(() -> {});
 
         final PlaylistLoader loader = new PlaylistLoader();
         try {

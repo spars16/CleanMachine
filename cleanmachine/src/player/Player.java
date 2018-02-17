@@ -13,23 +13,30 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Player implements Constants {
 
+    private Stack<SongDefinition> previous;
     private Song currentSong;
     private Playlist mainPlaylist;
     private Queue<SongDefinition> songQueue;
     private final List<Playlist> playlists;
     private Playlist currentPlaylist;
     private boolean loop;
+    private String defaultDirectory;
 
 
     public Player( final Playlist currentPlaylist, final List<Playlist> playlists) {
         this.playlists = playlists;
         this.currentPlaylist = currentPlaylist;
         this.mainPlaylist = currentPlaylist;
+        this.songQueue = new LinkedList<>();
+        this.previous = new Stack<>();
+
+        init();
 
     }
 
@@ -48,8 +55,10 @@ public class Player implements Constants {
     }
 
     public boolean next() {
-        if(currentSong != null)
+        if(currentSong != null) {
+            previous.push(currentSong.getDefinition());
             currentSong.stop();
+        }
         final SongDefinition definition = songQueue.poll();
         if(definition == null) {
             return false;
@@ -60,12 +69,24 @@ public class Player implements Constants {
         if(loop) {
             songQueue.add(currentSong.getDefinition());
         }
+
         currentSong = song;
         return true;
     }
 
+    public boolean previous() {
+        if(currentSong != null) {
+            currentSong.stop();
+            ((LinkedList<SongDefinition>)songQueue).push(currentSong.getDefinition());
+        }
+
+        return true;
+
+    }
+
     public void pause() {
-        currentSong.pause();
+        if(currentSong != null)
+            currentSong.pause();
     }
 
     public Song getCurrentSong() {
@@ -73,7 +94,7 @@ public class Player implements Constants {
     }
 
     public void shuffle() {
-        songQueue.clear();
+        reset();
         final List<SongDefinition> list = new LinkedList<>(currentPlaylist.getSongDefinitionList());
         Collections.shuffle(list);
 
@@ -90,9 +111,28 @@ public class Player implements Constants {
         return loop;
     }
 
+    private void reset() {
+        songQueue.clear();
+        previous.clear();
+    }
+
     public void addNewSong(final File[] files) {
+        final File dir = new File(CACHE_LOCATION);
+        if(!dir.exists())
+            dir.mkdirs();
+
         for(File f : files) {
-            final SongDefinition definition = new SongDefinition(f.getAbsolutePath());
+            final String newPath = CACHE_LOCATION + f.getName();
+            final File file = new File(newPath);
+            if(file.exists())
+                continue;
+            try {
+                Files.copy(f.toPath(), (new File(newPath)).toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+                continue;
+            }
+            final SongDefinition definition = new SongDefinition(file.getAbsolutePath());
             mainPlaylist.getSongDefinitionList().add(definition);
             if (mainPlaylist.equals(currentPlaylist)) {
                 songQueue.add(definition);
@@ -116,17 +156,15 @@ public class Player implements Constants {
         currentPlaylist = playlist;
     }
 
-
-
-
     private void save() {
         final JSONObject toSave = getSaveObject();
         BufferedWriter writer = null;
-        final File file = new File(CONFIG_FILE_PATH);
+        final File config = new File(CONFIG_FILE_PATH);
         try {
-            if(!file.exists())
-                file.createNewFile();
-            writer = new BufferedWriter(new FileWriter(file));
+            if(!config.exists()) {
+                    config.createNewFile();
+            }
+            writer = new BufferedWriter(new FileWriter(config));
             writer.write(toSave.toJSONString());
             writer.close();
         } catch(IOException e) {
@@ -155,9 +193,24 @@ public class Player implements Constants {
             playlist_obj.put("songfiles", song_files);
         }
 
+        object.put("defaultDirectory", defaultDirectory);
+
         return object;
 
     }
 
+    public static Player empty() {
+        final Playlist main = new Playlist("Song Library", new LinkedList<>());
+        final LinkedList<Playlist> playlists = new LinkedList<>();
+        playlists.add(main);
+        return new Player(main, playlists);
+    }
 
+    public String getDefaultDirectory() {
+        return defaultDirectory;
+    }
+
+    public void setDefaultDirectory(String defaultDirectory) {
+        this.defaultDirectory = defaultDirectory;
+    }
 }

@@ -28,10 +28,7 @@ public class PlaylistLoader implements FileLoader<Optional<Player>> {
     public Optional<Player> load(String location) throws IOException {
         final File file = new File(location);
         if(!file.exists()) {
-            final Playlist main = new Playlist("Song Library", new LinkedList<>());
-            final LinkedList<Playlist> playlists = new LinkedList<>();
-            playlists.add(main);
-            return Optional.of(new Player(main, playlists));
+            return Optional.of(Player.empty());
         }
 
         final FileReader fileReader = new FileReader(file);
@@ -46,7 +43,9 @@ public class PlaylistLoader implements FileLoader<Optional<Player>> {
             //LOAD ALL SONGS
             JSONObject obj = (JSONObject)parser.parse(fileReader);
             JSONArray songs = (JSONArray)obj.get(SONG_LIBRARY);
-
+            if(songs == null) {
+                return Optional.of(Player.empty());
+            }
             final List<SongDefinition> definitions = new LinkedList<>();
 
             for(int i = 0; i < songs.size(); i++) {
@@ -62,37 +61,44 @@ public class PlaylistLoader implements FileLoader<Optional<Player>> {
 
             //LOAD ALL STATIC PLAYLISTS
             JSONArray playlists = (JSONArray)obj.get(PLAYLISTS);
+            if(playlists != null) {
+                for (int i = 0; i < playlists.size(); i++) {
+                    JSONObject playlistObj = (JSONObject) playlists.get(i);
+                    final String name = playlistObj.get("name").toString();
+                    JSONArray songDefsForPlaylist = (JSONArray) playlistObj.get("songfiles");
 
-            for(int i = 0 ; i < playlists.size(); i++) {
-                JSONObject playlistObj = (JSONObject)playlists.get(i);
-                final String name = playlistObj.get("name").toString();
-                JSONArray songDefsForPlaylist = (JSONArray)playlistObj.get("songfiles");
+                    final List<SongDefinition> playlistSongDefs = new LinkedList<>();
 
-                final List<SongDefinition> playlistSongDefs = new LinkedList<>();
+                    for (int j = 0; j < songDefsForPlaylist.size(); j++) {
+                        final String songFile = playlistSongDefs.get(j).toString();
+                        playlistSongDefs.add(locationToSong.get(songFile));
+                    }
 
-                for(int j = 0 ; j < songDefsForPlaylist.size(); j++) {
-                    final String songFile = playlistSongDefs.get(j).toString();
-                    playlistSongDefs.add(locationToSong.get(songFile));
+                    final Playlist playlist = new Playlist(name, playlistSongDefs);
+                    playlistsList.add(playlist);
                 }
-
-                final Playlist playlist = new Playlist(name, playlistSongDefs);
-                playlistsList.add(playlist);
             }
 
-            //CREATE ALBUMS
+            final String defaultDirectory = obj.getOrDefault("defaultDirectory", System.getProperty("user.home")).toString();
+
+
+                //CREATE ALBUMS
 
             final Map<String, List<SongDefinition>> songsToAlbum = new HashMap<>();
 
-            for(SongDefinition def : definitions) {
+            for (SongDefinition def : definitions) {
                 final List<SongDefinition> list = songsToAlbum.getOrDefault(def.getAlbum(), new LinkedList<>());
                 list.add(def);
             }
 
-            for(Map.Entry<String, List<SongDefinition>> entry : songsToAlbum.entrySet()) {
+            for (Map.Entry<String, List<SongDefinition>> entry : songsToAlbum.entrySet()) {
                 final Album album = new Album(entry.getKey(), entry.getValue());
                 playlistsList.add(album);
             }
-            return Optional.of(new Player(currentPlaylist, playlistsList));
+
+            final Player player = new Player(currentPlaylist, playlistsList);
+            player.setDefaultDirectory(defaultDirectory);
+            return Optional.of(player);
         } catch(ParseException ex) {
             ex.printStackTrace();
         }

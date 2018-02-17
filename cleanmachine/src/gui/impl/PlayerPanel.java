@@ -1,5 +1,7 @@
-package gui;
+package gui.impl;
 
+import gui.MainPanel;
+import gui.SubPanel;
 import player.Player;
 import player.Resource;
 
@@ -8,16 +10,17 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 
-public class PlayerPanel extends JPanel {
+public class PlayerPanel extends SubPanel {
+
+    private boolean paused = true;
 
     private static final int X_BUTTON_WIDTH = 20;
     private static final int Y_BUTTON_HEIGHT = 15;
-    private final Player player;
     /**
      * Create the main panel that contains the Player
      */
-    public PlayerPanel(final Player player) {
-        this.player = player;
+    public PlayerPanel(MainPanel listener, final Player player) {
+        super(listener, player);
 
         setLayout(new BorderLayout());
 
@@ -37,8 +40,8 @@ public class PlayerPanel extends JPanel {
         topPanel.add(play);
         topPanel.add(next);
         topPanel.add(repeat);
-
-        add(topPanel);
+        //topPanel.add(Box.createVerticalBox());
+        //add(topPanel);
 
         //BOTTOM PANEL
         final JPanel bottomPanel = new JPanel();
@@ -49,8 +52,45 @@ public class PlayerPanel extends JPanel {
         final JLabel label = new JLabel("0:00");
         bottomPanel.add(label, BorderLayout.WEST);
         bottomPanel.add(songSlider, BorderLayout.CENTER);
-        //bottomPanel.add(new JLabel(durationMinutes(player.getCurrentSong().getDefinition().getDuration())), BorderLayout.EAST);
+        if(player.getCurrentSong() != null)
+            bottomPanel.add(new JLabel(durationMinutes(player.getCurrentSong().getDefinition().getDuration())), BorderLayout.EAST);
+        else
+            bottomPanel.add(new JLabel("0:00"), BorderLayout.EAST);
         add(bottomPanel, BorderLayout.SOUTH);
+
+
+        //BUTTON FUNCTIONALITY
+
+        play.addActionListener((e) -> {
+            if(player.getCurrentSong() == null) { //if no current song, load next one
+                if(!player.next())
+                    return;
+                else {//play next song
+                    player.getCurrentSong().play();
+                    paused = false;
+                    return;
+                }
+            }
+            if(paused) {
+                player.getCurrentSong().play();
+            } else {
+                player.getCurrentSong().pause();
+            }
+
+            paused = !paused;
+        });
+
+        next.addActionListener((e) -> {
+            if(player.next()) {
+                player.getCurrentSong().play();
+            }
+        });
+
+        final JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.add(topPanel);
+        add(panel, BorderLayout.CENTER);
+
     }
 
     private String durationMinutes(double d) {
@@ -76,16 +116,4 @@ public class PlayerPanel extends JPanel {
         return createLayoutButton(icon, hoverIcon, X_BUTTON_WIDTH, Y_BUTTON_HEIGHT);
     }
 
-    public File[] choose() {
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                "MP3 & MP4 Audio", "mp3", "mp4");
-        chooser.setFileFilter(filter);
-        int returnVal = chooser.showOpenDialog(this);
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
-            System.out.println("You chose to open this file: " +
-                    chooser.getSelectedFile().getName());
-        }
-        return chooser.getSelectedFiles();
-    }
 }

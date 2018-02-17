@@ -29,4 +29,7 @@ public class Playlist {
         return songDefinitionList;
     }
 
+    public void setSongDefinitionList(List<SongDefinition> songDefinitionList) {
+        this.songDefinitionList = songDefinitionList;
+    }
 }
