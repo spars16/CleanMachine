@@ -22,7 +22,7 @@ public class Player implements Constants {
     private Stack<SongDefinition> previous;
     private Song currentSong;
     private Playlist mainPlaylist;
-    private Queue<SongDefinition> songQueue;
+    private LinkedList<SongDefinition> songQueue;
     private final List<Playlist> playlists;
     private Playlist currentPlaylist;
     private boolean loop;
@@ -77,8 +77,15 @@ public class Player implements Constants {
     public boolean previous() {
         if(currentSong != null) {
             currentSong.stop();
-            ((LinkedList<SongDefinition>)songQueue).push(currentSong.getDefinition());
+            songQueue.push(currentSong.getDefinition());
         }
+
+        final SongDefinition definition = previous.pop();
+        if(definition == null)
+            return false;
+
+        final Song song = new Song(definition);
+        song.start();
 
         return true;
 

@@ -1,9 +1,12 @@
 package gui.impl;
 
+import gui.EventType;
 import gui.MainPanel;
 import gui.SubPanel;
 import player.Player;
 import player.Resource;
+import player.music.Song;
+import player.music.SongDefinition;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -16,6 +19,10 @@ public class PlayerPanel extends SubPanel {
 
     private static final int X_BUTTON_WIDTH = 20;
     private static final int Y_BUTTON_HEIGHT = 15;
+    private final JButton play = createLayoutButton("play.png", "playpressed.png", 40, 40);
+    private final JSlider songSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+
+
     /**
      * Create the main panel that contains the Player
      */
@@ -25,12 +32,11 @@ public class PlayerPanel extends SubPanel {
         setLayout(new BorderLayout());
 
         // TOP PANEL
+
         final JButton next = createLayoutButton("forward.png", "forpressed.png");
         final JButton back = createLayoutButton("rewind.png", "rewindpressed.png");
         final JButton shuffle = createLayoutButton("shuffle.png", "shufflepressed.png");
-        final JButton play = createLayoutButton("play.png", "playpressed.png", 40, 40);
         final JButton repeat = createLayoutButton("repeat.png", "repeatpressed.png", 20, 20);
-
         final JPanel topPanel = new JPanel();
 
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
@@ -46,7 +52,6 @@ public class PlayerPanel extends SubPanel {
         //BOTTOM PANEL
         final JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
-        final JSlider songSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
         songSlider.setPreferredSize(new Dimension(65, 20));
 
         final JLabel label = new JLabel("0:00");
@@ -72,9 +77,9 @@ public class PlayerPanel extends SubPanel {
                 }
             }
             if(paused) {
-                player.getCurrentSong().play();
+                listener.sendPropertyChange(EventType.PLAY, player.getCurrentSong(), this);
             } else {
-                player.getCurrentSong().pause();
+                listener.sendPropertyChange(EventType.PLAY, player.getCurrentSong(), this);
             }
 
             paused = !paused;
@@ -114,6 +119,27 @@ public class PlayerPanel extends SubPanel {
 
     private JButton createLayoutButton(String icon, String hoverIcon) {
         return createLayoutButton(icon, hoverIcon, X_BUTTON_WIDTH, Y_BUTTON_HEIGHT);
+    }
+
+    @Override
+    public <T extends SubPanel> void propertyChange(EventType type, Object obj, T t) {
+        switch (type) {
+            case PLAY:
+                //CHANGE TO PAUSE BUTTON
+                player.getCurrentSong().play();
+                break;
+            case PAUSE:
+                //CHANGE TO PLAY BUTTON
+                player.getCurrentSong().pause();
+                break;
+            case NEXT:
+            case PREVIOUS:
+                if((player.next() && type.equals(EventType.NEXT)) || (player.previous() && EventType.PREVIOUS.equals(type))) {
+                    player.getCurrentSong().play();
+                    //CHANGE TO PAUSE BUTTON
+                }
+                break;
+        }
     }
 
 }

@@ -10,20 +10,26 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-public class MainPanel extends JPanel implements PropertyChangeListener {
+public class MainPanel extends JPanel {
+
+    private final PlayerPanel playerPanel;
+    private final SelectionPanel selectionPanel;
+    private final QueuePanel queuePanel;
 
     public MainPanel(Player player) {
         setLayout(new BorderLayout());
 
-        add(new PlayerPanel(this, player), BorderLayout.SOUTH);
-        add(new SelectionPanel(this, player), BorderLayout.CENTER);
-        add(new QueuePanel(this, player), BorderLayout.EAST);
+        add(playerPanel = new PlayerPanel(this, player), BorderLayout.SOUTH);
+        add(selectionPanel = new SelectionPanel(this, player), BorderLayout.CENTER);
+        add(queuePanel = new QueuePanel(this, player), BorderLayout.EAST);
 
 
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-
+    public void sendPropertyChange(EventType type, Object object, SubPanel executor) {
+        for(SubPanel panel : new SubPanel[]{playerPanel, selectionPanel, queuePanel}) {
+            panel.propertyChange(type, object, executor);
+        }
     }
+
 }
