@@ -69,7 +69,7 @@ public class SelectionPanel extends SubPanel {
             for (int i = 0; i < otherList.size(); i++) {
                 dankArray[i] = otherList.get(i).getName();
             }
-            System.out.println("add action listener")
+            System.out.println("add action listener");
             playlistList.setListData(dankArray);
             playlistList.updateUI();
 
