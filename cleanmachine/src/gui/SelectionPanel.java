@@ -6,9 +6,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SelectionPanel extends JPanel {
+    private CenterPanel centerPanel;
 
+    /**
+     *
+     * @param player
+     */
     public SelectionPanel(Player player) {
-
         //   this.player = player;
         setLayout(new BorderLayout());
       /*  final JButton songs = makeLayoutButton("Songs");
