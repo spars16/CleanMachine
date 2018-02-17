@@ -84,14 +84,16 @@ public class Player implements Constants {
             songQueue.push(currentSong.getDefinition());
         }
 
-        final SongDefinition definition = previous.pop();
-        if(definition == null)
+        try {
+            final SongDefinition definition = previous.pop();
+
+            final Song song = new Song(definition);
+            song.start();
+
+            currentSong = song;
+        } catch (EmptyStackException exp) {
             return false;
-
-        final Song song = new Song(definition);
-        song.start();
-
-        currentSong = song;
+        }
         return true;
 
     }

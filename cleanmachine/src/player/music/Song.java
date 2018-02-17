@@ -27,7 +27,7 @@ public class Song {
     public void start() {
         mediaPlayer.setOnReady(() -> mediaPlayer.play());
         mediaPlayer.setOnEndOfMedia(() -> stop());
-    }
+}
 
     public void play() {
         mediaPlayer.play();

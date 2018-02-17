@@ -58,7 +58,7 @@ public class PlayerPanel extends SubPanel {
         bottomPanel.add(label, BorderLayout.WEST);
         bottomPanel.add(songSlider, BorderLayout.CENTER);
         if(player.getCurrentSong() != null)
-            bottomPanel.add(new JLabel(durationMinutes(player.getCurrentSong().getDefinition().getDuration())), BorderLayout.EAST);
+            bottomPanel.add(new JLabel(player.getCurrentSong().getDefinition().getFormattedDuration()), BorderLayout.EAST);
         else
             bottomPanel.add(new JLabel("0:00"), BorderLayout.EAST);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -102,11 +102,7 @@ public class PlayerPanel extends SubPanel {
 
     }
 
-    private String durationMinutes(double d) {
-        int p = (int)d;
-        String str = (p/60) + ":" + (p%60);
-        return str;
-    }
+
 
     private JButton createLayoutButton(String icon, String hoverIcon, int width, int height) {
         final ImageIcon original;

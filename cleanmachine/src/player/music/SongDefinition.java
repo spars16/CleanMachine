@@ -1,5 +1,6 @@
 package player.music;
 
+import com.sun.org.apache.xalan.internal.xsltc.dom.MultiValuedNodeHeapIterator;
 import javafx.collections.MapChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
@@ -7,6 +8,9 @@ import javafx.scene.media.MediaPlayer;
 
 import java.awt.*;
 import java.io.File;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,8 +32,6 @@ public class SongDefinition {
                     System.out.println(listener.getKey() + " " + listener.getValueAdded());
                     SongDefinition sd = SongDefinition.this;
                     switch (listener.getKey().toLowerCase()) {
-                        case "raw metadata":
-                            break;
                         case "album":
                             sd.album = listener.getValueAdded().toString();
                             break;
@@ -63,15 +65,19 @@ public class SongDefinition {
     }
 
     public String getArtist() {
-        return artist;
+        return artist == null ? "Unknown" : artist;
     }
 
     public String getTitle() {
-        return title;
+        return title == null ? location.substring(location.lastIndexOf("\\"), location.lastIndexOf(".")) : title;
     }
 
     public double getDuration() {
         return duration;
+    }
+
+    public String getFormattedDuration() {
+        return durationMinutes(duration);
     }
 
     public int getYear() {
@@ -84,5 +90,11 @@ public class SongDefinition {
 
     public Image getImage() {
         return image;
+    }
+
+    public String durationMinutes(double d) {
+        int p = (int)d;
+        String str = (p/60) + ":" + (p%60);
+        return str;
     }
 }

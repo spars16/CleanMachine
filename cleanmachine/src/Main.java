@@ -17,45 +17,39 @@ public class Main {
     public static void main(String[] args) {
 
         Toolkit.getDefaultToolkit();
-        PlatformImpl.startup(() -> {});
+        PlatformImpl.startup(() -> {
+            final PlaylistLoader loader = new PlaylistLoader();
+            try {
+                final Optional<Player> player = loader.load(Constants.CONFIG_FILE_PATH);
+                player.ifPresent((p) -> {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            JFrame.setDefaultLookAndFeelDecorated(true);
 
-        final PlaylistLoader loader = new PlaylistLoader();
-        try {
-            final Optional<Player> player = loader.load(Constants.CONFIG_FILE_PATH);
-            player.ifPresent((p) -> {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        JFrame.setDefaultLookAndFeelDecorated(true);
+                            try {
+                                SubstanceLookAndFeel.setSkin(new RavenSkin());
+                            } catch (Exception e) {
+                                System.out.println("Substance Graphite failed to initialize");
+                            }
 
-                        try {
-                            SubstanceLookAndFeel.setSkin(new RavenSkin());
-                        } catch (Exception e) {
-                            System.out.println("Substance Graphite failed to initialize");
+                            final JFrame frame = new JFrame("Player");
+
+                            frame.setUndecorated(true);
+
+                            frame.setIconImage(Resource.loadImage("CleanMachineIcon.png"));
+                            frame.setContentPane(new MainPanel(p));
+                            frame.pack();
+                            frame.setLocationRelativeTo(null);
+                            frame.setVisible(true);
+                            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                         }
-
-                        final JFrame frame = new JFrame("Player");
-
-                        frame.setUndecorated(true);
-
-                        frame.setIconImage(Resource.loadImage("CleanMachineIcon.png"));
-                        frame.setContentPane(new MainPanel(p));
-                        frame.pack();
-                        frame.setLocationRelativeTo(null);
-                        frame.setVisible(true);
-                        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    }
+                    });
                 });
-            });
-        } catch(IOException e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
-
-
-
-
-
-
+            } catch(IOException e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
+        });
     }
 
 }
