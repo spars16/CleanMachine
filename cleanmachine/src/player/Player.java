@@ -31,15 +31,35 @@ public class Player {
         return currentPlaylist;
     }
 
-    public void next() {
-        final Song song = currentSong;
-        if(song != null)
-            song.stop();
-        SongDefinition definition = songQueue.poll();
-        final Song newSong = new Song(definition);
+    public boolean next() {
+        if(currentSong != null)
+            currentSong.stop();
+        final SongDefinition definition = songQueue.poll();
+        if(definition == null) {
+            return false;
+        }
+        final Song song = new Song(definition);
         song.start();
-        song.getMediaPlayer().setOnEndOfMedia(this::next);
+        //song.getMediaPlayer().setOnEndOfMedia(this::next);
+
+        return true;
     }
+
+    public void pause() {
+        currentSong.pause();
+    }
+
+    public Song getCurrentSong() {
+        return currentSong;
+    }
+
+
+
+
+
+
+
+
 
 
 
