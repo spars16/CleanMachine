@@ -1,6 +1,5 @@
 package gui.impl;
 
-import com.sun.jmx.remote.security.JMXPluggableAuthenticator;
 import gui.MainPanel;
 import gui.SubPanel;
 import javafx.embed.swing.SwingFXUtils;

@@ -1,4 +1,3 @@
-import com.sun.javafx.application.PlatformImpl;
 import gui.MainPanel;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.skin.*;
@@ -17,7 +16,7 @@ public class Main {
     public static void main(String[] args) {
 
         Toolkit.getDefaultToolkit();
-        PlatformImpl.startup(() -> {
+        //PlatformImpl.startup(() -> {
             final PlaylistLoader loader = new PlaylistLoader();
             try {
                 final Optional<Player> player = loader.load(Constants.CONFIG_FILE_PATH);
@@ -49,7 +48,7 @@ public class Main {
                 e.printStackTrace();
                 System.exit(0);
             }
-        });
+        //});
     }
 
 }
