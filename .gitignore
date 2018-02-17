@@ -1,3 +1,11 @@
 #idea files
 
 .idea/
+
+#class files
+
+*.class
+
+# iml files
+
+*.iml
