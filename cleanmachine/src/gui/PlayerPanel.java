@@ -47,7 +47,7 @@ public class PlayerPanel extends JPanel {
         final JLabel label = new JLabel("0:00");
         bottomPanel.add(label, BorderLayout.WEST);
         bottomPanel.add(songSlider, BorderLayout.CENTER);
-        //bottomPanel.add(new JLabel(durationMinutes(player.getCurrentSong().getDefinition().getDuration()), BorderLayout.EAST);
+        //bottomPanel.add(new JLabel(durationMinutes(player.getCurrentSong().getDefinition().getDuration())), BorderLayout.EAST);
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
@@ -73,5 +73,4 @@ public class PlayerPanel extends JPanel {
     private JButton createLayoutButton(String icon, String hoverIcon) {
         return createLayoutButton(icon, hoverIcon, X_BUTTON_WIDTH, Y_BUTTON_HEIGHT);
     }
-
 }
