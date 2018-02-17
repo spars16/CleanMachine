@@ -35,10 +35,12 @@ public class SelectionPanel extends SubPanel {
         JList<String> playlistList = new JList();
         final java.util.List<player.music.Playlist> tempList = player.getPlaylists();
         String playlistArray[] = new String[tempList.size()];
-        for (int i = 0; i < tempList.size(); i++) {
-            // playlistList.addElement((tempList.get(i)).getName());
+      //  String playlistArray[] = new String[5];
+        for(int i=0; i < tempList.size(); i++)
+        {
             playlistArray[i] = tempList.get(i).getName();
         }
+
         playlistList.setListData(playlistArray);
 
         final JPanel selectPanel = new JPanel();
@@ -67,6 +69,7 @@ public class SelectionPanel extends SubPanel {
             for (int i = 0; i < otherList.size(); i++) {
                 dankArray[i] = otherList.get(i).getName();
             }
+            System.out.println("add action listener")
             playlistList.setListData(dankArray);
             playlistList.updateUI();
 
