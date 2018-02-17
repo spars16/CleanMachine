@@ -79,16 +79,20 @@ public class PlayerPanel extends SubPanel {
             if(paused) {
                 listener.sendPropertyChange(EventType.PLAY, player.getCurrentSong(), this);
             } else {
-                listener.sendPropertyChange(EventType.PLAY, player.getCurrentSong(), this);
+                listener.sendPropertyChange(EventType.PAUSE, player.getCurrentSong(), this);
             }
 
             paused = !paused;
         });
 
         next.addActionListener((e) -> {
-            if(player.next()) {
-                player.getCurrentSong().play();
-            }
+            if(player.next())
+                listener.sendPropertyChange(EventType.PLAY, player.getCurrentSong(), this);
+        });
+
+        back.addActionListener((e) -> {
+            if(player.previous())
+                listener.sendPropertyChange(EventType.PLAY, player.getCurrentSong(), this);
         });
 
         final JPanel panel = new JPanel();
@@ -131,13 +135,6 @@ public class PlayerPanel extends SubPanel {
             case PAUSE:
                 //CHANGE TO PLAY BUTTON
                 player.getCurrentSong().pause();
-                break;
-            case NEXT:
-            case PREVIOUS:
-                if((player.next() && type.equals(EventType.NEXT)) || (player.previous() && EventType.PREVIOUS.equals(type))) {
-                    player.getCurrentSong().play();
-                    //CHANGE TO PAUSE BUTTON
-                }
                 break;
         }
     }

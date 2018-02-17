@@ -25,17 +25,16 @@ public class QueuePanel extends SubPanel {
 
         queuedPanel.add(queue);
 
+
+
+        for(SongDefinition definition : player.getQueue()) {
+            queuedPanel.add(new QueueItem(definition));
+        }
+
+
+        //queuedPanel.add(list);
         add(queuedPanel, BorderLayout.EAST);
 
-        JList list = new JList();
-
-        //for(SongDefinition definition : player.getCurrentPlayerlist()) {
-
-        //}
-
-        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-        list.setVisibleRowCount(-1);
 
 
     }
@@ -53,8 +52,14 @@ public class QueuePanel extends SubPanel {
             final QueueItem item = QueueItem.this;
             item.setLayout(new BorderLayout());
 
-            Image image = SwingFXUtils.fromFXImage(definition.getImage(), null);
+            if(definition.getImage() != null) {
+                Image image = SwingFXUtils.fromFXImage(definition.getImage(), null);
+                //item.add(new JLabel(new ImageIcon(image)), BorderLayout.WEST);
+            }
 
+            System.out.println(definition.getArtist());
+            item.add(new JLabel(definition.getTitle()));
+            item.add(new JLabel(definition.getArtist()), BorderLayout.EAST);
             //item.add();
         }
     }

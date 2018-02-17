@@ -48,6 +48,10 @@ public class Player implements Constants {
         return currentPlaylist;
     }
 
+    public List<SongDefinition> getQueue() {
+        return songQueue;
+    }
+
     public void init() {
         for(SongDefinition definition : currentPlaylist.getSongDefinitionList()) {
             songQueue.add(definition);
@@ -87,6 +91,7 @@ public class Player implements Constants {
         final Song song = new Song(definition);
         song.start();
 
+        currentSong = song;
         return true;
 
     }
@@ -160,7 +165,7 @@ public class Player implements Constants {
     }
 
     public void switchToPlaylist(Playlist playlist) {
-        songQueue.clear();
+        reset();
 
         for(SongDefinition definition : playlist.getSongDefinitionList()) {
             songQueue.add(definition);
@@ -205,7 +210,7 @@ public class Player implements Constants {
             playlist_obj.put("songfiles", song_files);
         }
 
-        object.put("defaultDirectory", defaultDirectory);
+        object.put("defaultDirectory", defaultDirectory == null ? System.getProperty("user.home") : defaultDirectory);
 
         return object;
 

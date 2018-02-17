@@ -21,14 +21,15 @@ public class SongDefinition {
     public SongDefinition(final String location) {
         this.location = location;
 
-        final Media media = new Media((new File(location)).toURI().toString());
-        final MediaPlayer mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setOnReady(() -> {
-            duration = media.getDuration().toSeconds();
-            media.getMetadata().addListener((MapChangeListener<String, Object>)(listener) -> {
-                if(listener.wasAdded()) {
+        Executors.newSingleThreadExecutor().submit(() -> {
+            final Media media = new Media((new File(location)).toURI().toString());
+            media.getMetadata().addListener((MapChangeListener<String, Object>) (listener) -> {
+                if (listener.wasAdded()) {
+                    System.out.println(listener.getKey() + " " + listener.getValueAdded());
                     SongDefinition sd = SongDefinition.this;
-                    switch(listener.getKey().toLowerCase()) {
+                    switch (listener.getKey().toLowerCase()) {
+                        case "raw metadata":
+                            break;
                         case "album":
                             sd.album = listener.getValueAdded().toString();
                             break;
@@ -42,12 +43,18 @@ public class SongDefinition {
                             sd.year = Integer.parseInt(listener.getValueAdded().toString());
                             break;
                         case "image":
-                            sd.image = (Image)listener.getValueAdded();
+                            sd.image = (Image) listener.getValueAdded();
                             break;
                     }
                 }
-                mediaPlayer.dispose();
+                //mediaPlayer.dispose();
+
             });
+            final MediaPlayer mediaPlayer = new MediaPlayer(media);
+
+            mediaPlayer.setOnReady(() -> duration = media.getDuration().toSeconds());
+
+
         });
     }
 
