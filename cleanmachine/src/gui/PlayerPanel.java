@@ -4,7 +4,9 @@ import player.Player;
 import player.Resource;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.io.File;
 
 public class PlayerPanel extends JPanel {
 
@@ -72,5 +74,18 @@ public class PlayerPanel extends JPanel {
 
     private JButton createLayoutButton(String icon, String hoverIcon) {
         return createLayoutButton(icon, hoverIcon, X_BUTTON_WIDTH, Y_BUTTON_HEIGHT);
+    }
+
+    public File[] choose() {
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "MP3 & MP4 Audio", "mp3", "mp4");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(this);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            System.out.println("You chose to open this file: " +
+                    chooser.getSelectedFile().getName());
+        }
+        return chooser.getSelectedFiles();
     }
 }

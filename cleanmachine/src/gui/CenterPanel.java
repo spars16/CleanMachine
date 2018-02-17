@@ -7,7 +7,7 @@ import player.music.SongDefinition;
 import javax.swing.*;
 import java.awt.*;
 
-public class CenterPanel {
+public class CenterPanel extends JPanel {
     private final Player player;
     private final Playlist playlist;
 

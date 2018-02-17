@@ -26,7 +26,15 @@ public class PlaylistLoader implements FileLoader<Optional<Player>> {
      */
     @Override
     public Optional<Player> load(String location) throws IOException {
-        final FileReader fileReader = new FileReader(location);
+        final File file = new File(location);
+        if(!file.exists()) {
+            final Playlist main = new Playlist("Song Library", new LinkedList<>());
+            final LinkedList<Playlist> playlists = new LinkedList<>();
+            playlists.add(main);
+            return Optional.of(new Player(main, playlists));
+        }
+
+        final FileReader fileReader = new FileReader(file);
         final JSONParser parser = new JSONParser();
         final List<Playlist> playlistsList = new LinkedList<>();
 

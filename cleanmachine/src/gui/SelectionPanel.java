@@ -3,6 +3,7 @@ package gui;
 import player.Player;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 public class SelectionPanel extends JPanel {
@@ -15,10 +16,6 @@ public class SelectionPanel extends JPanel {
     public SelectionPanel(Player player) {
         //   this.player = player;
         setLayout(new BorderLayout());
-      /*  final JButton songs = makeLayoutButton("Songs");
-        final JButton artist = makeLayoutButton("Artists");
-        final JButton album = makeLayoutButton("Albums");
-       */
 
         final JLabel songs = new JLabel("Songs");
         final JLabel artists = new JLabel("Artists");
@@ -33,7 +30,8 @@ public class SelectionPanel extends JPanel {
         selectPanel.add(artists);
         selectPanel.add(albums);
 
-        add(selectPanel);
+        add(selectPanel, BorderLayout.EAST);
+        add(new CenterPanel(player, player.getCurrentPlayerlist()), BorderLayout.CENTER);
     }
 
 /*

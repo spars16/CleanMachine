@@ -18,7 +18,7 @@ public class Resource {
 
 
     public static final Image loadImage(final int width, final int height, final String fileName) {
-        return loadImage(fileName).getScaledInstance(width, height, Image.SCALE_DEFAULT);
+        return loadImage(fileName).getScaledInstance(width, height, Image.SCALE_SMOOTH);
     }
 
     public static final ImageIcon loadImageIcon(final int width, final int height, final String fileName) {
