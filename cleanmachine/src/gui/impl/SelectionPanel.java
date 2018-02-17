@@ -8,6 +8,7 @@ import player.music.Playlist;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
 
 public class SelectionPanel extends SubPanel {
@@ -34,9 +35,8 @@ public class SelectionPanel extends SubPanel {
         JList<String> playlistList = new JList();
         final java.util.List<player.music.Playlist> tempList = player.getPlaylists();
         String playlistArray[] = new String[tempList.size()];
-        for(int i=0;i < tempList.size();i++)
-        {
-           // playlistList.addElement((tempList.get(i)).getName());
+        for (int i = 0; i < tempList.size(); i++) {
+            // playlistList.addElement((tempList.get(i)).getName());
             playlistArray[i] = tempList.get(i).getName();
         }
         playlistList.setListData(playlistArray);
@@ -51,6 +51,7 @@ public class SelectionPanel extends SubPanel {
         selectPanel.add(artists);
         selectPanel.add(albums);
         selectPanel.add(playlists);
+        selectPanel.add(addPlaylist);
         selectPanel.add(playlistList);
 
         add(selectPanel, BorderLayout.WEST);
@@ -58,11 +59,23 @@ public class SelectionPanel extends SubPanel {
 
         add.addActionListener((e) -> player.addNewSong(choose()));
 
-        addPlaylist.addActionListener((e) -> player.addNewPlaylist(JOptionPane.showInputDialog("Please Input PlaylistName")));
+        addPlaylist.addActionListener((ActionEvent e) ->
+        {
+            player.addNewPlaylist(JOptionPane.showInputDialog("Please Input PlaylistName"));
+            final java.util.List<player.music.Playlist> otherList = player.getPlaylists();
+            String dankArray[] = new String[otherList.size()];
+            for (int i = 0; i < otherList.size(); i++) {
+                dankArray[i] = otherList.get(i).getName();
+            }
+            playlistList.setListData(dankArray);
+            playlistList.updateUI();
+
+        });
+
+
 
 
     }
-
 
     public File[] choose() {
         JFileChooser chooser = new JFileChooser();
