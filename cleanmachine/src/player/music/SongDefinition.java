@@ -69,7 +69,7 @@ public class SongDefinition {
     }
 
     public String getTitle() {
-        return title == null ? location.substring(location.lastIndexOf("\\"), location.lastIndexOf(".")) : title;
+        return title == null ? ((new File(location)).getName()) : title;
     }
 
     public double getDuration() {

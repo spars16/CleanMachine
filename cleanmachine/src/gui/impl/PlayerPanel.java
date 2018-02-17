@@ -95,6 +95,10 @@ public class PlayerPanel extends SubPanel {
                 listener.sendPropertyChange(EventType.PLAY, player.getCurrentSong(), this);
         });
 
+        repeat.addActionListener((e) -> {
+
+        });
+
         final JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         panel.add(topPanel);
@@ -115,6 +119,11 @@ public class PlayerPanel extends SubPanel {
         next.setRolloverIcon(hover);
         next.setPressedIcon(original);
         return next;
+    }
+
+    private JButton repeatButton() {
+        final JButton repeat = new JButton();
+        return repeat;
     }
 
     private JButton createLayoutButton(String icon, String hoverIcon) {

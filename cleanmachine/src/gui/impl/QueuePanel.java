@@ -41,14 +41,6 @@ public class QueuePanel extends SubPanel {
 
 
     }
-    private void mouseClicked(java.awt.event.MouseEvent mouse) {
-        JList list = (JList)mouse.getSource();
-        if (mouse.getClickCount() == 2) {
-            int index = list.locationToIndex(mouse.getPoint());
-            System.out.println("index: "+index);
-            list.ensureIndexIsVisible(index);
-        }
-    }
 
     private class QueueItem extends JPanel {
         public QueueItem(SongDefinition definition) {
