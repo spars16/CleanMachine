@@ -19,11 +19,12 @@ public class MainPanel extends JPanel implements PropertyChangeListener {
         add(new SelectionPanel(this, player), BorderLayout.CENTER);
         add(new QueuePanel(this, player), BorderLayout.EAST);
 
-
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
     }
+
+
 }
