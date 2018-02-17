@@ -154,6 +154,11 @@ public class Player implements Constants {
         save();
     }
 
+    public void addNewPlaylist(final String name) {
+        playlists.add(new Playlist(name, new LinkedList<>()));
+        save();
+    }
+
     public void switchToPlaylist(Playlist playlist) {
         songQueue.clear();
 

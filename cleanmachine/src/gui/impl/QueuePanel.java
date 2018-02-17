@@ -2,10 +2,13 @@ package gui.impl;
 
 import gui.MainPanel;
 import gui.SubPanel;
+import javafx.embed.swing.SwingFXUtils;
 import player.Player;
+import player.music.SongDefinition;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class QueuePanel extends SubPanel {
 
@@ -25,6 +28,11 @@ public class QueuePanel extends SubPanel {
         add(queuedPanel, BorderLayout.EAST);
 
         JList list = new JList();
+
+        //for(SongDefinition definition : player.getCurrentPlayerlist()) {
+
+        //}
+
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         list.setVisibleRowCount(-1);
@@ -37,6 +45,17 @@ public class QueuePanel extends SubPanel {
             int index = list.locationToIndex(mouse.getPoint());
             System.out.println("index: "+index);
             list.ensureIndexIsVisible(index);
+        }
+    }
+
+    private class QueueItem extends JPanel {
+        public QueueItem(SongDefinition definition) {
+            final QueueItem item = QueueItem.this;
+            item.setLayout(new BorderLayout());
+
+            Image image = SwingFXUtils.fromFXImage(definition.getImage(), null);
+
+            //item.add();
         }
     }
 }
