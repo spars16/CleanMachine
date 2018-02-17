@@ -66,7 +66,9 @@ public class SelectionPanel extends SubPanel {
                 "MP3 & MP4 Audio", "mp3", "mp4");
         chooser.setFileFilter(filter);
         chooser.setMultiSelectionEnabled(true);
-        chooser.setCurrentDirectory(new File(player.getDefaultDirectory()));
+        if(player.getDefaultDirectory() != null)
+            chooser.setCurrentDirectory(
+                new File(player.getDefaultDirectory()));
         int returnVal = chooser.showOpenDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             player.setDefaultDirectory(chooser.getCurrentDirectory().getAbsolutePath());

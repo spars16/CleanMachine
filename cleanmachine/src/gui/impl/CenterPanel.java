@@ -5,7 +5,6 @@ import gui.SubPanel;
 import player.Player;
 import player.music.Playlist;
 import player.music.SongDefinition;
-import sun.applet.Main;
 
 import javax.swing.*;
 import java.awt.*;

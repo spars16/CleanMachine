@@ -35,7 +35,7 @@ public class PlayerPanel extends SubPanel {
 
         final JButton next = createLayoutButton("forward.png", "forpressed.png");
         final JButton back = createLayoutButton("rewind.png", "rewindpressed.png");
-        final JButton shuffle = createLayoutButton("shuffle.png", "shufflepressed.png");
+        final JButton shuffle = createLayoutButton("shuffle.png", "shufflepressed.png", 20, 20);
         final JButton repeat = createLayoutButton("repeat.png", "repeatpressed.png", 20, 20);
         final JPanel topPanel = new JPanel();
 
