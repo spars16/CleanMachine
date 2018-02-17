@@ -5,3 +5,7 @@
 #class files
 
 *.class
+
+# iml files
+
+*.iml
