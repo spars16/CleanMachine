@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CleanMachine.iml" filepath="$PROJECT_DIR$/CleanMachine.iml" />
-      <module fileurl="file://$PROJECT_DIR$/cleanmachine/cleanmachine.iml" filepath="$PROJECT_DIR$/cleanmachine/cleanmachine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/CleanMachine.iml" filepath="$PROJECT_DIR$/.idea/CleanMachine.iml" />
     </modules>
   </component>
 </project>

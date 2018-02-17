@@ -57,6 +57,10 @@ public class SelectionPanel extends SubPanel {
         add(new CenterPanel(listener, player, player.getCurrentPlayerlist()), BorderLayout.CENTER);
 
         add.addActionListener((e) -> player.addNewSong(choose()));
+
+        addPlaylist.addActionListener((e) -> player.addNewPlaylist(JOptionPane.showInputDialog("Please Input PlaylistName")));
+
+
     }
 
 
@@ -77,5 +81,13 @@ public class SelectionPanel extends SubPanel {
 
         return new File[0];
     }
+/*
+    public boolean addPlaylistGui()
+    {
+        String newName = JOptionPane.showInputDialog("Please Input Playlist Name");
+        //player.addNewPlayList(newName);
+        return true;
+    }
+*/
 
 }
