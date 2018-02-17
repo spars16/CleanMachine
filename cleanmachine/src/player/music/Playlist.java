@@ -17,8 +17,6 @@ public class Playlist {
     }
 
 
-
-
     public String getName() {
         return name;
     }

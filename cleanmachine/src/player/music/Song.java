@@ -52,4 +52,8 @@ public class Song {
     public MediaPlayer getMediaPlayer() {
         return mediaPlayer;
     }
+
+    public SongDefinition getDefinition() {
+        return definition;
+    }
 }
