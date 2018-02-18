@@ -74,9 +74,8 @@ public class SelectionPanel extends SubPanel {
             playlistList.updateUI();
 
         });
-
-
-
+        CenterPanel centerPanel = new CenterPanel(listener, player, player.getCurrentPlayerlist());
+        add(centerPanel, BorderLayout.CENTER);
 
     }
 

@@ -1,6 +1,6 @@
 package gui.impl;
 
-import gui.MainPanel;
+import gui.*;
 import gui.SubPanel;
 import player.Player;
 import player.music.Playlist;
@@ -16,15 +16,33 @@ public class CenterPanel extends SubPanel {
         super(listener, player);
         setLayout(new BorderLayout());
         this.playlist = clickedPlaylist;
-        add(new JLabel());
+
+        java.util.List<SongDefinition> songDefList = playlist.getSongDefinitionList();
+
+        for(int i=0; i < songDefList.size(); i++)
+        {
+            JPanel songPanel = songInfo(songDefList.get(i));
+            add(songPanel);
+            System.out.println("songpanel made");
+        }
+
     }
 
     public JPanel songInfo(SongDefinition definition) {
-        JPanel songDef = new JPanel();
+        GridLayout gridLayout = new GridLayout(0,5);
+        JButton playButt = new JButton();
+        JPanel songDef = new JPanel(gridLayout);
         JLabel title = new JLabel(""+definition.getTitle());
         JLabel artist = new JLabel(""+definition.getArtist());
-        songDef.add(title, BorderLayout.WEST);
-        songDef.add(artist, BorderLayout.CENTER);
+        JLabel album = new JLabel(""+definition.getArtist());
+        JLabel duration = new JLabel(""+definition.getFormattedDuration());
+        songDef.add(playButt);
+        songDef.add(title);
+        songDef.add(artist);
+        songDef.add(album);
+        songDef.add(duration);
+        //  songDef.add(title, BorderLayout.WEST);
+        //songDef.add(artist, BorderLayout.CENTER);
         return songDef;
     }
 
