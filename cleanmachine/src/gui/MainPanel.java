@@ -18,7 +18,7 @@ public class MainPanel extends JPanel {
 
     public MainPanel(Player player) {
         setLayout(new BorderLayout());
-
+        setPreferredSize(new Dimension(850, 500));
         add(playerPanel = new PlayerPanel(this, player), BorderLayout.SOUTH);
         add(selectionPanel = new SelectionPanel(this, player), BorderLayout.CENTER);
         add(queuePanel = new QueuePanel(this, player), BorderLayout.EAST);

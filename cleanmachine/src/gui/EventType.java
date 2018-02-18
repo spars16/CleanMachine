@@ -4,5 +4,9 @@ public enum EventType {
     PLAY,
     PAUSE,
     NEXT,
-    PREVIOUS;
+    PREVIOUS,
+    PLAY_NEW,
+    ADD_SONG,
+    SHUFFLE,
+    NEW_PLAYLIST;
 }

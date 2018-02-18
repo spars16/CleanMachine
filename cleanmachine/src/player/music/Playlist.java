@@ -13,6 +13,7 @@ public class Playlist {
     private String name;
 
     public Playlist(String name, List<SongDefinition> songDefinitionList) {
+        this.name = name;
         this.songDefinitionList = songDefinitionList;
     }
 
@@ -31,5 +32,10 @@ public class Playlist {
 
     public void setSongDefinitionList(List<SongDefinition> songDefinitionList) {
         this.songDefinitionList = songDefinitionList;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

@@ -4,9 +4,23 @@ import javafx.collections.MapChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.TagException;
+import player.Player;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.*;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Map;
@@ -22,8 +36,9 @@ public class SongDefinition {
     private Image image;
 
     public SongDefinition(final String location) {
-        this.location = location;
 
+        this.location = location;
+        System.out.println("Loc: "+location);
         Executors.newSingleThreadExecutor().submit(() -> {
             final Media media = new Media((new File(location)).toURI().toString());
             media.getMetadata().addListener((MapChangeListener<String, Object>) (listener) -> {
@@ -51,16 +66,21 @@ public class SongDefinition {
                 //mediaPlayer.dispose();
 
             });
-            final MediaPlayer mediaPlayer = new MediaPlayer(media);
-
-            mediaPlayer.setOnReady(() -> duration = media.getDuration().toSeconds());
 
 
         });
+        try {
+            AudioFile f = AudioFileIO.read(new File(location));
+            this.duration = f.getAudioHeader().getTrackLength();
+        } catch (IOException|TagException|ReadOnlyFileException|InvalidAudioFrameException|CannotReadException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     public String getAlbum() {
-        return album;
+        return album == null ? "N/A" : album;
     }
 
     public String getArtist() {
@@ -91,9 +111,17 @@ public class SongDefinition {
         return image;
     }
 
-    public String durationMinutes(double d) {
+    public static String durationMinutes(double d) {
         int p = (int)d;
-        String str = (p/60) + ":" + (p%60);
-        return str;
+        final StringBuilder builder = new StringBuilder();
+
+        builder.append(p/60);
+        final int seconds = p%60;
+        builder.append(":");
+        if(seconds < 10) {
+            builder.append("0").append(seconds);
+        } else
+            builder.append(seconds);
+        return builder.toString();
     }
 }

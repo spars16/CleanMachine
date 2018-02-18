@@ -1,8 +1,10 @@
 package player.music;
 
+import gui.task.TaskManager;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import player.Player;
 
 import java.io.File;
 
@@ -19,14 +21,15 @@ public class Song {
 
     public Song(SongDefinition definition) {
         this.definition = definition;
-
+        System.out.println(definition.getLocation());
         media = new Media((new File(definition.getLocation()).toURI().toString()));
         mediaPlayer = new MediaPlayer(media);
+        //mediaPlayer.setAutoPlay(true);
     }
 
     public void start() {
-        mediaPlayer.setOnReady(() -> mediaPlayer.play());
-        mediaPlayer.setOnEndOfMedia(() -> stop());
+        mediaPlayer.play();
+        //mediaPlayer.setOnReady(() -> );
 }
 
     public void play() {

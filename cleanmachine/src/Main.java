@@ -1,4 +1,6 @@
+import com.sun.javafx.application.PlatformImpl;
 import gui.MainPanel;
+import javafx.embed.swing.JFXPanel;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.skin.*;
 import player.Constants;
@@ -13,10 +15,12 @@ import java.util.Optional;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         Toolkit.getDefaultToolkit();
-        //PlatformImpl.startup(() -> {
+        new JFXPanel();
+        Thread.sleep(3000);
+        PlatformImpl.startup(() -> {
             final PlaylistLoader loader = new PlaylistLoader();
             try {
                 final Optional<Player> player = loader.load(Constants.CONFIG_FILE_PATH);
@@ -36,6 +40,7 @@ public class Main {
                             frame.setUndecorated(true);
 
                             frame.setIconImage(Resource.loadImage("CleanMachineIcon.png"));
+                            frame.setPreferredSize(new Dimension(1100, 550));
                             frame.setContentPane(new MainPanel(p));
                             frame.pack();
                             frame.setLocationRelativeTo(null);
@@ -48,7 +53,7 @@ public class Main {
                 e.printStackTrace();
                 System.exit(0);
             }
-        //});
+        });
     }
 
 }

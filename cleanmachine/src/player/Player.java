@@ -6,26 +6,23 @@ import player.music.Playlist;
 import player.music.Song;
 import player.music.SongDefinition;
 
-import javax.management.RuntimeErrorException;
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Player implements Constants {
 
+
+    private RepeatState repeatState = RepeatState.NO_REPEAT;
     private Stack<SongDefinition> previous;
     private Song currentSong;
     private Playlist mainPlaylist;
     private LinkedList<SongDefinition> songQueue;
     private final List<Playlist> playlists;
     private Playlist currentPlaylist;
-    private boolean loop;
     private String defaultDirectory;
 
 
@@ -61,41 +58,50 @@ public class Player implements Constants {
     public boolean next() {
         if(currentSong != null) {
             previous.push(currentSong.getDefinition());
-            currentSong.stop();
         }
-        final SongDefinition definition = songQueue.poll();
+
+        if(repeatState.equals(RepeatState.REPEAT_SONG)) {
+            setNewSong(currentSong.getDefinition());
+            return true;
+        }
+        SongDefinition definition = songQueue.poll();
         if(definition == null) {
             return false;
         }
-        final Song song = new Song(definition);
-        song.start();
-        //song.getMediaPlayer().setOnEndOfMedia(this::next);
-        if(loop) {
+
+        if(repeatState.equals(RepeatState.REPEAT_PLAYLIST)) {
             songQueue.add(currentSong.getDefinition());
         }
-
-        currentSong = song;
+        setNewSong(definition);
         return true;
     }
 
     public boolean previous() {
         if(currentSong != null) {
-            currentSong.stop();
             songQueue.push(currentSong.getDefinition());
         }
 
         try {
             final SongDefinition definition = previous.pop();
-
-            final Song song = new Song(definition);
-            song.start();
-
-            currentSong = song;
+            setNewSong(definition);
         } catch (EmptyStackException exp) {
             return false;
         }
         return true;
 
+    }
+
+    public void setNewSong(SongDefinition def) {
+        if(currentSong != null) {
+            currentSong.stop();
+        }
+        final Song song = new Song(def);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        currentSong = song;
     }
 
     public void pause() {
@@ -117,12 +123,8 @@ public class Player implements Constants {
         }
     }
 
-    public void clickLoop() {
-        loop = !loop;
-    }
-
-    public boolean isLooping() {
-        return loop;
+    public RepeatState nextRepeatState() {
+        return (repeatState = repeatState.nextState());
     }
 
     private void reset() {
@@ -161,9 +163,11 @@ public class Player implements Constants {
         save();
     }
 
-    public void addNewPlaylist(final String name) {
-        playlists.add(new Playlist(name, new LinkedList<>()));
+    public Playlist addNewPlaylist(final String name) {
+        Playlist list;
+        playlists.add(list = new Playlist(name, new LinkedList<>()));
         save();
+        return list;
     }
 
     public void switchToPlaylist(Playlist playlist) {
@@ -210,7 +214,10 @@ public class Player implements Constants {
             }
 
             playlist_obj.put("songfiles", song_files);
+            playlists_array.add(playlist_obj);
         }
+
+        object.put(PLAYLISTS, playlists_array);
 
         object.put("defaultDirectory", defaultDirectory == null ? System.getProperty("user.home") : defaultDirectory);
 
@@ -231,5 +238,23 @@ public class Player implements Constants {
 
     public void setDefaultDirectory(String defaultDirectory) {
         this.defaultDirectory = defaultDirectory;
+    }
+
+
+    public enum RepeatState {
+        NO_REPEAT("repeat.png"),
+        REPEAT_PLAYLIST("repeatpressed.png"),
+        REPEAT_SONG("repeatpressed2.png");
+
+        public final String file;
+        RepeatState(String file) {
+            this.file = file;
+        }
+
+        private static final RepeatState[] values = values();
+
+        public RepeatState nextState() {
+            return values[(this.ordinal() + 1)%values.length];
+        }
     }
 }

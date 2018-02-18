@@ -1,18 +1,22 @@
 package gui.impl;
 
+import gui.EventType;
 import gui.MainPanel;
 import gui.SubPanel;
 import player.Player;
 import player.music.Playlist;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.function.Function;
 
 public class SelectionPanel extends SubPanel {
-    private CenterPanel centerPanel;
+    private JScrollPane centerPanel;
 
     /**
      *
@@ -29,19 +33,17 @@ public class SelectionPanel extends SubPanel {
         final JLabel artists = new JLabel("Artists");
         final JLabel albums = new JLabel("Albums");
         final JLabel playlists = new JLabel("PlayLists");
-        final JButton add = new JButton("+");
-        final JButton addPlaylist = new JButton("add playlist");
+        final JButton add = new JButton("Add Song");
+        final JButton addPlaylist = new JButton("Add Playlist");
 
-        JList<String> playlistList = new JList();
-        final java.util.List<player.music.Playlist> tempList = player.getPlaylists();
-        String playlistArray[] = new String[tempList.size()];
-      //  String playlistArray[] = new String[5];
-        for(int i=0; i < tempList.size(); i++)
-        {
-            playlistArray[i] = tempList.get(i).getName();
-        }
 
-        playlistList.setListData(playlistArray);
+        final DefaultListModel<Playlist> playlistsData = new DefaultListModel<>();
+
+        player.getPlaylists().stream().forEach(playlistsData::addElement);
+
+
+        JList<Playlist> playlistList = new JList<>(playlistsData);
+
 
         final JPanel selectPanel = new JPanel();
         JScrollPane scrollSelect = new JScrollPane(selectPanel);
@@ -49,32 +51,40 @@ public class SelectionPanel extends SubPanel {
         selectPanel.setLayout(new BoxLayout(selectPanel, BoxLayout.Y_AXIS));
 
         selectPanel.add(add);
-        selectPanel.add(songs);
-        selectPanel.add(artists);
-        selectPanel.add(albums);
-        selectPanel.add(playlists);
+       // selectPanel.add(songs);
+       // selectPanel.add(artists);
+       // selectPanel.add(albums);
         selectPanel.add(addPlaylist);
+        selectPanel.add(playlists);
         selectPanel.add(playlistList);
 
         add(selectPanel, BorderLayout.WEST);
         add(new CenterPanel(listener, player, player.getCurrentPlayerlist()), BorderLayout.CENTER);
 
-        add.addActionListener((e) -> player.addNewSong(choose()));
+        add.addActionListener((e) -> {
+            player.addNewSong(choose());
+        });
 
         addPlaylist.addActionListener((ActionEvent e) ->
         {
-            player.addNewPlaylist(JOptionPane.showInputDialog("Please Input PlaylistName"));
-            final java.util.List<player.music.Playlist> otherList = player.getPlaylists();
-            String dankArray[] = new String[otherList.size()];
-            for (int i = 0; i < otherList.size(); i++) {
-                dankArray[i] = otherList.get(i).getName();
-            }
-            System.out.println("add action listener");
-            playlistList.setListData(dankArray);
+            Playlist list = player.addNewPlaylist(JOptionPane.showInputDialog("Please Input Playlist Name"));
+            playlistsData.addElement(list);
             playlistList.updateUI();
 
         });
-        CenterPanel centerPanel = new CenterPanel(listener, player, player.getCurrentPlayerlist());
+        centerPanel = new JScrollPane(new CenterPanel(listener, player, player.getCurrentPlayerlist()));
+
+        playlistList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                Playlist change = playlistList.getSelectedValue();
+                remove(centerPanel);
+                centerPanel = new JScrollPane(new CenterPanel(listener, player, change));
+                add(centerPanel);
+                SelectionPanel.this.revalidate();
+                SelectionPanel.this.repaint();
+            }
+        });
         add(centerPanel, BorderLayout.CENTER);
 
     }
